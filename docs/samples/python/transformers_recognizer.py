@@ -83,27 +83,23 @@ class TransformersRecognizer(EntityRecognizer):
             logger.warning(
                 f"Both 'model' and 'model_path' arguments are None. Using default model_path={model_path}"
             )
-        
+
         if model and model_path:
             logger.warning(
-                f"Both 'model' and 'model_path' arguments were provided. Ignoring the model_path"
+                "Both 'model' and 'model_path' arguments were provided. Ignoring the model_path"
             )
 
-        self.check_label_groups = (
-            check_label_groups if check_label_groups else self.CHECK_LABEL_GROUPS
+
+        self.check_label_groups = check_label_groups or self.CHECK_LABEL_GROUPS
+
+        supported_entities = supported_entities or self.ENTITIES
+        self.model = model or pipeline(
+            "ner",
+            model=AutoModelForTokenClassification.from_pretrained(model_path),
+            tokenizer=AutoTokenizer.from_pretrained(model_path),
+            aggregation_strategy="simple",
         )
 
-        supported_entities = supported_entities if supported_entities else self.ENTITIES
-        self.model = (
-            model
-            if model
-            else pipeline(
-                "ner",
-                model=AutoModelForTokenClassification.from_pretrained(model_path),
-                tokenizer=AutoTokenizer.from_pretrained(model_path),
-                aggregation_strategy="simple",
-            )
-        )
 
         super().__init__(
             supported_entities=supported_entities, name="transformers Analytics",
@@ -172,15 +168,13 @@ class TransformersRecognizer(EntityRecognizer):
         )
         transformers_score = round(res["score"], 2)
 
-        transformers_results = RecognizerResult(
+        return RecognizerResult(
             entity_type=entity_type,
             start=res["start"],
             end=res["end"],
             score=transformers_score,
             analysis_explanation=explanation,
         )
-
-        return transformers_results
 
     def build_transformers_explanation(
         self, original_score: float, explanation: str
@@ -192,19 +186,18 @@ class TransformersRecognizer(EntityRecognizer):
         :param explanation: Explanation string
         :return:
         """
-        explanation = AnalysisExplanation(
+        return AnalysisExplanation(
             recognizer=self.__class__.__name__,
             original_score=original_score,
             textual_explanation=explanation,
         )
-        return explanation
 
     @staticmethod
     def __check_label(
         entity: str, label: str, check_label_groups: Tuple[Set, Set]
     ) -> bool:
         return any(
-            [entity in egrp and label in lgrp for egrp, lgrp in check_label_groups]
+            entity in egrp and label in lgrp for egrp, lgrp in check_label_groups
         )
 
 

@@ -68,8 +68,8 @@ class IbanRecognizer(PatternRecognizer):
         self.exact_match = exact_match
         self.BOSEOS = bos_eos if exact_match else ()
         self.flags = regex_flags
-        patterns = patterns if patterns else self.PATTERNS
-        context = context if context else self.CONTEXT
+        patterns = patterns or self.PATTERNS
+        context = context or self.CONTEXT
         super().__init__(
             supported_entity=supported_entity,
             patterns=patterns,
@@ -180,7 +180,7 @@ class IbanRecognizer(PatternRecognizer):
 
     @staticmethod
     def __generate_iban_check_digits(iban: str, letters: Dict[int, str]) -> str:
-        transformed_iban = (iban[:2] + "00" + iban[4:]).upper()
+        transformed_iban = f"{iban[:2]}00{iban[4:]}".upper()
         number_iban = IbanRecognizer.__number_iban(transformed_iban, letters)
         return "{:0>2}".format(98 - (int(number_iban) % 97))
 

@@ -23,7 +23,4 @@ class OCR(ABC):
 
         return: str containing the full extracted text as string
         """
-        if not ocr_result:
-            return ""
-        else:
-            return separator.join(ocr_result["text"])
+        return separator.join(ocr_result["text"]) if ocr_result else ""

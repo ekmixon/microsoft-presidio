@@ -5,8 +5,8 @@ from presidio_analyzer.nlp_engine import NlpEngine, NlpArtifacts
 
 class NlpEngineMock(NlpEngine):
     def __init__(self, stopwords=None, punct_words=None, nlp_artifacts=None):
-        self.stopwords = stopwords if stopwords else []
-        self.punct_words = punct_words if punct_words else []
+        self.stopwords = stopwords or []
+        self.punct_words = punct_words or []
         if nlp_artifacts is None:
             self.nlp_artifacts = NlpArtifacts([], [], [], [], None, "en")
         else:
@@ -25,5 +25,5 @@ class NlpEngineMock(NlpEngine):
         self, texts: Iterable[str], language: str, **kwargs
     ) -> Iterator[Tuple[str, NlpArtifacts]]:
         texts = list(texts)
-        for i in range(len(texts)):
-            yield texts[i], self.nlp_artifacts
+        for text in texts:
+            yield (text, self.nlp_artifacts)

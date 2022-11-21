@@ -47,11 +47,9 @@ class CreditCardRecognizer(PatternRecognizer):
         replacement_pairs: Optional[List[Tuple[str, str]]] = None,
     ):
 
-        self.replacement_pairs = (
-            replacement_pairs if replacement_pairs else [("-", ""), (" ", "")]
-        )
-        patterns = patterns if patterns else self.PATTERNS
-        context = context if context else self.CONTEXT
+        self.replacement_pairs = replacement_pairs or [("-", ""), (" ", "")]
+        patterns = patterns or self.PATTERNS
+        context = context or self.CONTEXT
         super().__init__(
             supported_entity=supported_entity,
             patterns=patterns,
@@ -61,14 +59,12 @@ class CreditCardRecognizer(PatternRecognizer):
 
     def validate_result(self, pattern_text: str) -> bool:  # noqa D102
         sanitized_value = self.__sanitize_value(pattern_text, self.replacement_pairs)
-        checksum = self.__luhn_checksum(sanitized_value)
-
-        return checksum
+        return self.__luhn_checksum(sanitized_value)
 
     @staticmethod
     def __luhn_checksum(sanitized_value: str) -> bool:
         def digits_of(n: str) -> List[int]:
-            return [int(dig) for dig in str(n)]
+            return [int(dig) for dig in n]
 
         digits = digits_of(sanitized_value)
         odd_digits = digits[-1::-2]

@@ -31,7 +31,7 @@ class PhoneRecognizer(LocalRecognizer):
         # For all regions, use phonenumbers.SUPPORTED_REGIONS
         supported_regions=DEFAULT_SUPPORTED_REGIONS,
     ):
-        context = context if context else self.CONTEXT
+        context = context or self.CONTEXT
         self.supported_regions = supported_regions
         super().__init__(
             supported_entities=self.get_supported_entities(),
@@ -67,7 +67,7 @@ class PhoneRecognizer(LocalRecognizer):
         return EntityRecognizer.remove_duplicates(results)
 
     def _get_recognizer_result(self, match, text, region, nlp_artifacts):
-        result = RecognizerResult(
+        return RecognizerResult(
             entity_type="PHONE_NUMBER",
             start=match.start,
             end=match.end,
@@ -78,8 +78,6 @@ class PhoneRecognizer(LocalRecognizer):
                 RecognizerResult.RECOGNIZER_IDENTIFIER_KEY: self.id,
             },
         )
-
-        return result
 
     def _get_analysis_explanation(self, region):
         return AnalysisExplanation(

@@ -48,10 +48,11 @@ def analyzer_supported_entities(data):
 def redact(file, color_fill=None):
     multipart_form_data = __get_multipart_form_data(file)
     payload = __get_redact_payload(color_fill)
-    response = requests.post(
-        f"{IMAGE_REDACTOR_BASE_URL}/redact", files=multipart_form_data, data=payload
+    return requests.post(
+        f"{IMAGE_REDACTOR_BASE_URL}/redact",
+        files=multipart_form_data,
+        data=payload,
     )
-    return response
 
 
 def deanonymize(data):
@@ -62,16 +63,18 @@ def deanonymize(data):
 
 
 def __get_redact_payload(color_fill):
-    payload = {}
-    if color_fill:
-        payload = {"data": "{'color_fill':'" + str(color_fill) + "'}"}
-    return payload
+    return (
+        {"data": "{'color_fill':'" + str(color_fill) + "'}"}
+        if color_fill
+        else {}
+    )
 
 
 def __get_multipart_form_data(file):
-    multipart_form_data = {}
-    if file:
-        multipart_form_data = {
+    return (
+        {
             "image": (file.name, file, "multipart/form-data"),
         }
-    return multipart_form_data
+        if file
+        else {}
+    )

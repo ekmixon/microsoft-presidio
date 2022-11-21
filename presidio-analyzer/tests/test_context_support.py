@@ -22,7 +22,7 @@ from presidio_analyzer.context_aware_enhancers import LemmaContextAwareEnhancer
 
 @pytest.fixture(scope="module")
 def recognizers_map():
-    rec_map = {
+    return {
         "IP_ADDRESS": IpRecognizer(),
         "US_SSN": UsSsnRecognizer(),
         "PHONE_NUMBER": PhoneRecognizer(),
@@ -33,15 +33,11 @@ def recognizers_map():
         "US_PASSPORT": UsPassportRecognizer(),
         "FIN": SgFinRecognizer(),
     }
-    return rec_map
 
 
 @pytest.fixture(scope="module")
 def recognizers_list(recognizers_map):
-    rec_list = []
-    for item in recognizers_map:
-        rec_list.append(recognizers_map[item])
-    return rec_list
+    return [recognizers_map[item] for item in recognizers_map]
 
 
 @pytest.fixture(scope="module")
@@ -55,7 +51,7 @@ def dataset(recognizers_map):
     a list of tuples of the sentence, a recognizer and entity types.
     """
 
-    data_path = os.path.dirname(__file__) + "/data/context_sentences_tests.txt"
+    data_path = f"{os.path.dirname(__file__)}/data/context_sentences_tests.txt"
     with open(data_path, "r") as f:
         # get non-empty lines without comments
         lines = [line.strip() for line in f if line[0] != "#" and line.strip()]
@@ -64,14 +60,14 @@ def dataset(recognizers_map):
     for i in range(0, len(lines), 2):
         entity_type = lines[i].strip()
         item = lines[i + 1].strip()
-        recognizer = recognizers_map.get(entity_type, None)
-        if not recognizer:
+        if recognizer := recognizers_map.get(entity_type, None):
+            test_items.append((item, recognizer, [entity_type]))
+        else:
             # will fail the test in its turn
             raise ValueError(f"bad entity type {entity_type}")
 
-        test_items.append((item, recognizer, [entity_type]))
     # Currently we have 28 sentences, this is a sanity check
-    if not len(test_items) == 28:
+    if len(test_items) != 28:
         raise ValueError(f"expected 28 context sentences but found {len(test_items)}")
 
     yield test_items

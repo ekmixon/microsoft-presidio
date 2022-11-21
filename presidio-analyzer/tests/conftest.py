@@ -60,8 +60,7 @@ def nlp_engines(request, nlp_engine_provider) -> Dict[str, NlpEngine]:
 
 @pytest.fixture(autouse=True)
 def skip_by_engine(request, nlp_engines):
-    marker = request.node.get_closest_marker("skip_engine")
-    if marker:
+    if marker := request.node.get_closest_marker("skip_engine"):
         marker_arg = marker.args[0]
         if marker_arg not in nlp_engines:
             pytest.skip(f"skipped on this engine: {marker_arg}")
@@ -128,20 +127,18 @@ def mock_bn_model():
 def zip_code_recognizer():
     regex = r"(\b\d{5}(?:\-\d{4})?\b)"
     zipcode_pattern = Pattern(name="zip code (weak)", regex=regex, score=0.01)
-    zip_recognizer = PatternRecognizer(
+    return PatternRecognizer(
         supported_entity="ZIP", patterns=[zipcode_pattern]
     )
-    return zip_recognizer
 
 
 @pytest.fixture(scope="session")
 def zip_code_deny_list_recognizer():
     regex = r"(\b\d{5}(?:\-\d{4})?\b)"
     zipcode_pattern = Pattern(name="zip code (weak)", regex=regex, score=0.01)
-    zip_recognizer = PatternRecognizer(
+    return PatternRecognizer(
         supported_entity="ZIP", deny_list=["999"], patterns=[zipcode_pattern]
     )
-    return zip_recognizer
 
 
 def pytest_sessionfinish():
@@ -151,11 +148,11 @@ def pytest_sessionfinish():
         try:
             shutil.rmtree(he_test_model_path)
         except OSError as e:
-            print("Failed to remove file: %s - %s." % (e.filename, e.strerror))
+            print(f"Failed to remove file: {e.filename} - {e.strerror}.")
 
     bn_test_model_path = Path(Path(__file__).parent.parent, "bn_test")
     if bn_test_model_path.exists():
         try:
             shutil.rmtree(bn_test_model_path)
         except OSError as e:
-            print("Failed to remove file: %s - %s." % (e.filename, e.strerror))
+            print(f"Failed to remove file: {e.filename} - {e.strerror}.")

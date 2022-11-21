@@ -54,11 +54,9 @@ class AuTfnRecognizer(PatternRecognizer):
         supported_entity: str = "AU_TFN",
         replacement_pairs: Optional[List[Tuple[str, str]]] = None,
     ):
-        self.replacement_pairs = (
-            replacement_pairs if replacement_pairs else [("-", ""), (" ", "")]
-        )
-        patterns = patterns if patterns else self.PATTERNS
-        context = context if context else self.CONTEXT
+        self.replacement_pairs = replacement_pairs or [("-", ""), (" ", "")]
+        patterns = patterns or self.PATTERNS
+        context = context or self.CONTEXT
         super().__init__(
             supported_entity=supported_entity,
             patterns=patterns,
@@ -82,15 +80,9 @@ class AuTfnRecognizer(PatternRecognizer):
         weight = [1, 4, 3, 7, 5, 8, 6, 9, 10]
 
         # Perform checksums
-        sum_product = 0
-        for i in range(9):
-            sum_product += tfn_list[i] * weight[i]
+        sum_product = sum(tfn_list[i] * weight[i] for i in range(9))
         remainder = sum_product % 11
-        if remainder == 0:
-            result = True
-        else:
-            result = None
-        return result
+        return True if remainder == 0 else None
 
     @staticmethod
     def __sanitize_value(text: str, replacement_pairs: List[Tuple[str, str]]) -> str:

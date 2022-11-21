@@ -31,7 +31,7 @@ class AppTracerMock(AppTracer):
         :return:
         """
         if self.enable_decision_process:
-            self.last_trace = "[{}][{}]".format(request_id, trace_data)
+            self.last_trace = f"[{request_id}][{trace_data}]"
             self.logger.info("[%s][%s]", request_id, trace_data)
             self.msg_counter = self.msg_counter + 1
 

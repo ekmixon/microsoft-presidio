@@ -22,12 +22,10 @@ class Custom(Operator):
     def validate(self, params: Dict) -> None:
         """Validate the provided function is returning a string."""
         new_val = params.get(self.LAMBDA)
-        if callable(new_val):
-            if not type(new_val("PII")) == str:
-                raise InvalidParamException("Function return type must be a str")
-
-        else:
+        if not callable(new_val):
             raise InvalidParamException("New value must be a callable function")
+        if type(new_val("PII")) != str:
+            raise InvalidParamException("Function return type must be a str")
 
     def operator_name(self) -> str:
         """Return operator name."""

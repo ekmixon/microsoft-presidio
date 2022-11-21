@@ -100,27 +100,25 @@ class AnonymizerEngine(EngineBase):
         other_elements = analyzer_results.copy()
         for result in analyzer_results:
             other_elements.remove(result)
-            result_conflicted = self.__is_result_conflicted_with_other_elements(
+            if result_conflicted := self.__is_result_conflicted_with_other_elements(
                 other_elements, result
-            )
-            if not result_conflicted:
-                other_elements.append(result)
-                unique_text_metadata_elements.append(result)
-            else:
+            ):
                 self.logger.debug(
                     f"removing element {result} from results list due to conflict"
                 )
+            else:
+                other_elements.append(result)
+                unique_text_metadata_elements.append(result)
         return unique_text_metadata_elements
 
     def get_anonymizers(self) -> List[str]:
         """Return a list of supported anonymizers."""
-        names = [p for p in self.operators_factory.get_anonymizers().keys()]
-        return names
+        return list(self.operators_factory.get_anonymizers().keys())
 
     @staticmethod
     def __is_result_conflicted_with_other_elements(other_elements, result):
         return any(
-            [result.has_conflict(other_element) for other_element in other_elements]
+            result.has_conflict(other_element) for other_element in other_elements
         )
 
     @staticmethod

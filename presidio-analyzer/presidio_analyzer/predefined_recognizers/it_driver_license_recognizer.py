@@ -32,8 +32,8 @@ class ItDriverLicenseRecognizer(PatternRecognizer):
         supported_language: str = "it",
         supported_entity: str = "IT_DRIVER_LICENSE",
     ):
-        patterns = patterns if patterns else self.PATTERNS
-        context = context if context else self.CONTEXT
+        patterns = patterns or self.PATTERNS
+        context = context or self.CONTEXT
         super().__init__(
             supported_entity=supported_entity,
             patterns=patterns,

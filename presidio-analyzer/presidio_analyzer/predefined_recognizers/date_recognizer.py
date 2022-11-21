@@ -88,8 +88,8 @@ class DateRecognizer(PatternRecognizer):
         supported_language: str = "en",
         supported_entity: str = "DATE_TIME",
     ):
-        patterns = patterns if patterns else self.PATTERNS
-        context = context if context else self.CONTEXT
+        patterns = patterns or self.PATTERNS
+        context = context or self.CONTEXT
         super().__init__(
             supported_entity=supported_entity,
             patterns=patterns,

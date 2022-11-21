@@ -13,14 +13,11 @@ class Replace(Operator):
     def operate(self, text: str = None, params: Dict = None) -> str:
         """:return: new_value."""
         new_val = params.get(self.NEW_VALUE)
-        if not new_val:
-            return f"<{params.get('entity_type')}>"
-        return new_val
+        return new_val or f"<{params.get('entity_type')}>"
 
     def validate(self, params: Dict = None) -> None:
         """Validate the new value is string."""
         validate_type(params.get(self.NEW_VALUE), self.NEW_VALUE, str)
-        pass
 
     def operator_name(self) -> str:
         """Return operator name."""

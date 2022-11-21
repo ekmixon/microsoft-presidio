@@ -51,11 +51,9 @@ class AuAbnRecognizer(PatternRecognizer):
         supported_entity: str = "AU_ABN",
         replacement_pairs: Optional[List[Tuple[str, str]]] = None,
     ):
-        self.replacement_pairs = (
-            replacement_pairs if replacement_pairs else [("-", ""), (" ", "")]
-        )
-        patterns = patterns if patterns else self.PATTERNS
-        context = context if context else self.CONTEXT
+        self.replacement_pairs = replacement_pairs or [("-", ""), (" ", "")]
+        patterns = patterns or self.PATTERNS
+        context = context or self.CONTEXT
         super().__init__(
             supported_entity=supported_entity,
             patterns=patterns,
@@ -80,15 +78,9 @@ class AuAbnRecognizer(PatternRecognizer):
 
         # Perform checksums
         abn_list[0] = 9 if abn_list[0] == 0 else abn_list[0] - 1
-        sum_product = 0
-        for i in range(11):
-            sum_product += abn_list[i] * weight[i]
+        sum_product = sum(abn_list[i] * weight[i] for i in range(11))
         remainder = sum_product % 89
-        if remainder == 0:
-            result = True
-        else:
-            result = None
-        return result
+        return True if remainder == 0 else None
 
     @staticmethod
     def __sanitize_value(text: str, replacement_pairs: List[Tuple[str, str]]) -> str:

@@ -53,7 +53,7 @@ class AnalysisExplanation:
         if self.textual_explanation is None:
             self.textual_explanation = text
         else:
-            self.textual_explanation = "{}\n{}".format(self.textual_explanation, text)
+            self.textual_explanation = f"{self.textual_explanation}\n{text}"
 
     def to_dict(self) -> Dict:
         """

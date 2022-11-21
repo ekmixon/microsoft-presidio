@@ -83,9 +83,7 @@ class ExampleRemoteRecognizer(RemoteRecognizer):
             timeout=200,
         )
 
-        results = self._recognizer_results_from_response(response)
-
-        return results
+        return self._recognizer_results_from_response(response)
 
     def get_supported_entities(self) -> List[str]:
         """Return the list of supported entities."""
@@ -97,9 +95,7 @@ class ExampleRemoteRecognizer(RemoteRecognizer):
     ) -> List[RecognizerResult]:
         """Translate the service's response to a list of RecognizerResult."""
         results = json.loads(response.text)
-        recognizer_results = [RecognizerResult(**result) for result in results]
-
-        return recognizer_results
+        return [RecognizerResult(**result) for result in results]
 
     @staticmethod
     def _supported_entities_from_response(response: requests.Response) -> List[str]:

@@ -107,13 +107,12 @@ class TransformersNlpEngine(SpacyNlpEngine):
             models = {
                 "en": {"spacy": "en_core_web_sm", "transformers": "dslim/bert-base-NER"}
             }
-        # validate models type
         elif type(models) is not dict:
             logger.error(f"''models' argument must be dict, not {type(models)}")
             raise KeyError(f"Expected 'models' argument to be dict, not {type(models)}")
-        # validate models[model_lang] type is dict for all model_lang
         elif any(
-            [type(model_dict) is not dict for model_lang, model_dict in models.items()]
+            type(model_dict) is not dict
+            for model_lang, model_dict in models.items()
         ):
             # elif type(models["model_name"]) is not dict:
             logger.error(
@@ -124,12 +123,9 @@ class TransformersNlpEngine(SpacyNlpEngine):
                 "Expected 'models.model_name' argument to be dict,"
                 f"not {type(models['model_name'])}"
             )
-        # chack that model_name dict includes the keys: "spacy" and "transformers"
         elif any(
-            [
-                any([key not in model_dict for key in ("spacy", "transformers")])
-                for model_lang, model_dict in models.items()
-            ]
+            any(key not in model_dict for key in ("spacy", "transformers"))
+            for model_lang, model_dict in models.items()
         ):
             logger.error(
                 "'models.model_name' must contains 'spacy' and 'transformers' keys"

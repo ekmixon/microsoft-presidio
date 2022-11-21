@@ -81,16 +81,13 @@ class FlairRecognizer(EntityRecognizer):
         check_label_groups: Optional[Tuple[Set, Set]] = None,
         model: SequenceTagger = None,
     ):
-        self.check_label_groups = (
-            check_label_groups if check_label_groups else self.CHECK_LABEL_GROUPS
+        self.check_label_groups = check_label_groups or self.CHECK_LABEL_GROUPS
+
+        supported_entities = supported_entities or self.ENTITIES
+        self.model = model or SequenceTagger.load(
+            self.MODEL_LANGUAGES.get(supported_language)
         )
 
-        supported_entities = supported_entities if supported_entities else self.ENTITIES
-        self.model = (
-            model
-            if model
-            else SequenceTagger.load(self.MODEL_LANGUAGES.get(supported_language))
-        )
 
         super().__init__(
             supported_entities=supported_entities,
@@ -160,15 +157,13 @@ class FlairRecognizer(EntityRecognizer):
         entity_type = self.PRESIDIO_EQUIVALENCES.get(entity.tag, entity.tag)
         flair_score = round(entity.score, 2)
 
-        flair_results = RecognizerResult(
+        return RecognizerResult(
             entity_type=entity_type,
             start=entity.start_pos,
             end=entity.end_pos,
             score=flair_score,
             analysis_explanation=explanation,
         )
-
-        return flair_results
 
     def build_flair_explanation(
         self, original_score: float, explanation: str
@@ -180,19 +175,18 @@ class FlairRecognizer(EntityRecognizer):
         :param explanation: Explanation string
         :return:
         """
-        explanation = AnalysisExplanation(
+        return AnalysisExplanation(
             recognizer=self.__class__.__name__,
             original_score=original_score,
             textual_explanation=explanation,
         )
-        return explanation
 
     @staticmethod
     def __check_label(
         entity: str, label: str, check_label_groups: Tuple[Set, Set]
     ) -> bool:
         return any(
-            [entity in egrp and label in lgrp for egrp, lgrp in check_label_groups]
+            entity in egrp and label in lgrp for egrp, lgrp in check_label_groups
         )
 
 

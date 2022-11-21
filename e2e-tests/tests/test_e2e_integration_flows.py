@@ -15,8 +15,7 @@ def analyze_and_assert(analyzer_request, expected_response):
     response_status, response_content = analyze(json.dumps(analyzer_request))
     assert response_status == 200
     assert equal_json_strings(expected_response, response_content)
-    analyzer_data = json.loads(response_content)
-    return analyzer_data
+    return json.loads(response_content)
 
 
 def anonymize_and_assert(anonymizer_request, expected_response):

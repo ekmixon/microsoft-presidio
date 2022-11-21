@@ -94,11 +94,7 @@ class AnalyzerEngine:
         :param language: Return the recognizers supporting a given language.
         :return: List of [Recognizer] as a RecognizersAllResponse
         """
-        if not language:
-            languages = self.supported_languages
-        else:
-            languages = [language]
-
+        languages = [language] if language else self.supported_languages
         recognizers = []
         for language in languages:
             logger.info(f"Fetching all recognizers for language {language}")
@@ -190,8 +186,9 @@ class AnalyzerEngine:
 
         if self.log_decision_process:
             self.app_tracer.trace(
-                correlation_id, "nlp artifacts:" + nlp_artifacts.to_json()
+                correlation_id, f"nlp artifacts:{nlp_artifacts.to_json()}"
             )
+
 
         results = []
         for recognizer in recognizers:
@@ -200,11 +197,9 @@ class AnalyzerEngine:
                 recognizer.load()
                 recognizer.is_loaded = True
 
-            # analyze using the current recognizer and append the results
-            current_results = recognizer.analyze(
+            if current_results := recognizer.analyze(
                 text=text, entities=entities, nlp_artifacts=nlp_artifacts
-            )
-            if current_results:
+            ):
                 # add recognizer name to recognition metadata inside results
                 # if not exists
                 self.__add_recognizer_id_if_not_exists(current_results, recognizer)
@@ -306,8 +301,7 @@ class AnalyzerEngine:
         if score_threshold is None:
             score_threshold = self.default_score_threshold
 
-        new_results = [result for result in results if result.score >= score_threshold]
-        return new_results
+        return [result for result in results if result.score >= score_threshold]
 
     @staticmethod
     def _remove_allow_list(
@@ -345,7 +339,7 @@ class AnalyzerEngine:
         """
         for result in results:
             if not result.recognition_metadata:
-                result.recognition_metadata = dict()
+                result.recognition_metadata = {}
             if (
                 RecognizerResult.RECOGNIZER_IDENTIFIER_KEY
                 not in result.recognition_metadata

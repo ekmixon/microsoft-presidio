@@ -112,7 +112,7 @@ def test_analyze_dict_on_simple_dict(batch_analyzer_engine_simple):
     results = batch_analyzer_engine_simple.analyze_dict(input_dict=batch, language="en")
 
     for result in results:
-        assert result.key in batch.keys()
+        assert result.key in batch
         assert len(result.recognizer_results) == 3
         for val, reco_res in zip(result.value, result.recognizer_results):
             assert val in batch[result.key]

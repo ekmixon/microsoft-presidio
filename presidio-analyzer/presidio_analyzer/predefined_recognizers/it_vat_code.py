@@ -37,13 +37,9 @@ class ItVatCodeRecognizer(PatternRecognizer):
         supported_entity: str = "IT_VAT_CODE",
         replacement_pairs: Optional[List[Tuple[str, str]]] = None,
     ):
-        self.replacement_pairs = (
-            replacement_pairs
-            if replacement_pairs
-            else [("-", ""), (" ", ""), ("_", "")]
-        )
-        patterns = patterns if patterns else self.PATTERNS
-        context = context if context else self.CONTEXT
+        self.replacement_pairs = replacement_pairs or [("-", ""), (" ", ""), ("_", "")]
+        patterns = patterns or self.PATTERNS
+        context = context or self.CONTEXT
         super().__init__(
             supported_entity=supported_entity,
             patterns=patterns,
@@ -71,7 +67,7 @@ class ItVatCodeRecognizer(PatternRecognizer):
         x = 0
         y = 0
 
-        for i in range(0, 5):
+        for i in range(5):
             x += int(text[2 * i])
             tmp_y = int(text[2 * i + 1]) * 2
             if tmp_y > 9:
@@ -81,12 +77,7 @@ class ItVatCodeRecognizer(PatternRecognizer):
         t = (x + y) % 10
         c = (10 - t) % 10
 
-        if c == int(text[10]):
-            result = True
-        else:
-            result = False
-
-        return result
+        return c == int(text[10])
 
     @staticmethod
     def __sanitize_value(text: str, replacement_pairs: List[Tuple[str, str]]) -> str:

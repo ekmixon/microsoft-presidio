@@ -48,11 +48,9 @@ class AuAcnRecognizer(PatternRecognizer):
         supported_entity: str = "AU_ACN",
         replacement_pairs: Optional[List[Tuple[str, str]]] = None,
     ):
-        self.replacement_pairs = (
-            replacement_pairs if replacement_pairs else [("-", ""), (" ", "")]
-        )
-        patterns = patterns if patterns else self.PATTERNS
-        context = context if context else self.CONTEXT
+        self.replacement_pairs = replacement_pairs or [("-", ""), (" ", "")]
+        patterns = patterns or self.PATTERNS
+        context = context or self.CONTEXT
         super().__init__(
             supported_entity=supported_entity,
             patterns=patterns,
@@ -76,16 +74,10 @@ class AuAcnRecognizer(PatternRecognizer):
         weight = [8, 7, 6, 5, 4, 3, 2, 1]
 
         # Perform checksums
-        sum_product = 0
-        for i in range(8):
-            sum_product += acn_list[i] * weight[i]
+        sum_product = sum(acn_list[i] * weight[i] for i in range(8))
         remainder = sum_product % 10
         complement = 10 - remainder
-        if complement == acn_list[-1]:
-            result = True
-        else:
-            result = None
-        return result
+        return True if complement == acn_list[-1] else None
 
     @staticmethod
     def __sanitize_value(text: str, replacement_pairs: List[Tuple[str, str]]) -> str:

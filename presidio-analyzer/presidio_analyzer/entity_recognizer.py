@@ -43,17 +43,13 @@ class EntityRecognizer:
 
         self.supported_entities = supported_entities
 
-        if name is None:
-            self.name = self.__class__.__name__  # assign class name as name
-        else:
-            self.name = name
-
+        self.name = self.__class__.__name__ if name is None else name
         self._id = f"{self.name}_{id(self)}"
 
         self.supported_language = supported_language
         self.version = version
         self.is_loaded = False
-        self.context = context if context else []
+        self.context = context or []
 
         self.load()
         logger.info("Loaded recognizer: %s", self.name)
@@ -147,13 +143,12 @@ class EntityRecognizer:
 
         :return: a dictionary
         """
-        return_dict = {
+        return {
             "supported_entities": self.supported_entities,
             "supported_language": self.supported_language,
             "name": self.name,
             "version": self.version,
         }
-        return return_dict
 
     @classmethod
     def from_dict(cls, entity_recognizer_dict: Dict) -> "EntityRecognizer":

@@ -54,10 +54,8 @@ class SpacyRecognizer(LocalRecognizer):
         context: Optional[List[str]] = None,
     ):
         self.ner_strength = ner_strength
-        self.check_label_groups = (
-            check_label_groups if check_label_groups else self.CHECK_LABEL_GROUPS
-        )
-        supported_entities = supported_entities if supported_entities else self.ENTITIES
+        self.check_label_groups = check_label_groups or self.CHECK_LABEL_GROUPS
+        supported_entities = supported_entities or self.ENTITIES
         super().__init__(
             supported_entities=supported_entities,
             supported_language=supported_language,
@@ -79,12 +77,11 @@ class SpacyRecognizer(LocalRecognizer):
         :param explanation: Explanation string
         :return:
         """
-        explanation = AnalysisExplanation(
+        return AnalysisExplanation(
             recognizer=self.__class__.__name__,
             original_score=original_score,
             textual_explanation=explanation,
         )
-        return explanation
 
     def analyze(self, text, entities, nlp_artifacts=None):  # noqa D102
         results = []
@@ -124,5 +121,5 @@ class SpacyRecognizer(LocalRecognizer):
         entity: str, label: str, check_label_groups: Tuple[Set, Set]
     ) -> bool:
         return any(
-            [entity in egrp and label in lgrp for egrp, lgrp in check_label_groups]
+            entity in egrp and label in lgrp for egrp, lgrp in check_label_groups
         )

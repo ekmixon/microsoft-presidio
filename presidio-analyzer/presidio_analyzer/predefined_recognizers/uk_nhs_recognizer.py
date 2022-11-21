@@ -39,11 +39,9 @@ class NhsRecognizer(PatternRecognizer):
         supported_entity: str = "UK_NHS",
         replacement_pairs: Optional[List[Tuple[str, str]]] = None,
     ):
-        self.replacement_pairs = (
-            replacement_pairs if replacement_pairs else [("-", ""), (" ", "")]
-        )
-        patterns = patterns if patterns else self.PATTERNS
-        context = context if context else self.CONTEXT
+        self.replacement_pairs = replacement_pairs or [("-", ""), (" ", "")]
+        patterns = patterns or self.PATTERNS
+        context = context or self.CONTEXT
         super().__init__(
             supported_entity=supported_entity,
             patterns=patterns,
@@ -61,12 +59,11 @@ class NhsRecognizer(PatternRecognizer):
         """
         text = self.__sanitize_value(pattern_text, self.replacement_pairs)
         total = sum(
-            [int(c) * multiplier for c, multiplier in zip(text, reversed(range(11)))]
+            int(c) * multiplier for c, multiplier in zip(text, reversed(range(11)))
         )
-        remainder = total % 11
-        check_remainder = remainder == 0
 
-        return check_remainder
+        remainder = total % 11
+        return remainder == 0
 
     @staticmethod
     def __sanitize_value(text: str, replacement_pairs: List[Tuple[str, str]]) -> str:

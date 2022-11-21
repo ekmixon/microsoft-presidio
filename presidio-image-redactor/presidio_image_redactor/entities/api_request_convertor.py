@@ -19,9 +19,7 @@ def get_json_data(data: str) -> dict:
     :return: dictionary
     """
     try:
-        if not data:
-            return {}
-        return json.loads(data.replace("'", '"'))
+        return json.loads(data.replace("'", '"')) if data else {}
     except Exception as e:
         logger.error(f"failed to parse json from string '{data}' with error {e}")
         raise InvalidParamException(f"Invalid json format '{data}'")

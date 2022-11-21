@@ -49,8 +49,8 @@ class AbaRoutingRecognizer(PatternRecognizer):
         replacement_pairs: Optional[List[Tuple[str, str]]] = None,
     ):
         self.replacement_pairs = replacement_pairs or [("-", "")]
-        patterns = patterns if patterns else self.PATTERNS
-        context = context if context else self.CONTEXT
+        patterns = patterns or self.PATTERNS
+        context = context or self.CONTEXT
         super().__init__(
             supported_entity=supported_entity,
             patterns=patterns,
@@ -64,9 +64,11 @@ class AbaRoutingRecognizer(PatternRecognizer):
 
     @staticmethod
     def __checksum(sanitized_value: str) -> bool:
-        s = 0
-        for idx, m in enumerate([3, 7, 1, 3, 7, 1, 3, 7, 1]):
-            s += int(sanitized_value[idx]) * m
+        s = sum(
+            int(sanitized_value[idx]) * m
+            for idx, m in enumerate([3, 7, 1, 3, 7, 1, 3, 7, 1])
+        )
+
         return s % 10 == 0
 
     @staticmethod

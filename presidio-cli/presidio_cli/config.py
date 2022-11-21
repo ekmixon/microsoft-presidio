@@ -106,7 +106,7 @@ class PresidioCLIConfig(object):
         try:
             conf = yaml.safe_load(raw_content)
         except Exception as e:
-            raise PresidioCLIConfigError("invalid config: %s" % e)
+            raise PresidioCLIConfigError(f"invalid config: {e}")
 
         if not isinstance(conf, dict):
             raise PresidioCLIConfigError("invalid config: not a dict")
@@ -132,7 +132,7 @@ class PresidioCLIConfig(object):
             try:
                 self.extend(base)
             except Exception as e:
-                raise PresidioCLIConfigError("invalid config: %s" % e)
+                raise PresidioCLIConfigError(f"invalid config: {e}")
 
         if "ignore" in conf:
             if not isinstance(conf["ignore"], str):
@@ -159,7 +159,7 @@ class PresidioCLIConfig(object):
             try:
                 assert id in self.analyzer.get_supported_entities()
             except Exception:
-                raise PresidioCLIConfigError("invalid config: no such entity %s" % id)
+                raise PresidioCLIConfigError(f"invalid config: no such entity {id}")
 
 
 def get_extended_config_file(
@@ -175,8 +175,9 @@ def get_extended_config_file(
     # Is it a standard conf shipped with yamllint...
     if "/" not in name:
         std_conf = os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "conf", name + ".yaml"
+            os.path.dirname(os.path.realpath(__file__)), "conf", f"{name}.yaml"
         )
+
 
         if os.path.isfile(std_conf):
             return std_conf
