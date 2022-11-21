@@ -201,7 +201,11 @@ def get_content():
 
 
 def __find_element(content: List, entity_type: str):
-    for result in content:
-        if result.get("entity_type") == entity_type:
-            return result
-    return None
+    return next(
+        (
+            result
+            for result in content
+            if result.get("entity_type") == entity_type
+        ),
+        None,
+    )

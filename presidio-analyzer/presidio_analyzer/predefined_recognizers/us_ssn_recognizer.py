@@ -41,8 +41,8 @@ class UsSsnRecognizer(PatternRecognizer):
         supported_language: str = "en",
         supported_entity: str = "US_SSN",
     ):
-        patterns = patterns if patterns else self.PATTERNS
-        context = context if context else self.CONTEXT
+        patterns = patterns or self.PATTERNS
+        context = context or self.CONTEXT
         super().__init__(
             supported_entity=supported_entity,
             patterns=patterns,
@@ -75,8 +75,7 @@ class UsSsnRecognizer(PatternRecognizer):
             # groups cannot be all zeros
             return True
 
-        for sample_ssn in ("000", "666", "123456789", "98765432", "078051120"):
-            if only_digits.startswith(sample_ssn):
-                return True
-
-        return False
+        return any(
+            only_digits.startswith(sample_ssn)
+            for sample_ssn in ("000", "666", "123456789", "98765432", "078051120")
+        )

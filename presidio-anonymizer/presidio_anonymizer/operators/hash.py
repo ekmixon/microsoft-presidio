@@ -36,7 +36,6 @@ class Hash(Operator):
             self.HASH_TYPE,
             str,
         )
-        pass
 
     def operator_name(self) -> str:
         """Return operator name."""

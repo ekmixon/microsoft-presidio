@@ -60,14 +60,13 @@ def test_given_short_key_then_we_fail():
 
 def test_given_anonymize_with_encrypt_then_text_returned_with_encrypted_content():
     unencrypted_text = "My name is "
-    expected_encrypted_text = "Chloë"
-    text = unencrypted_text + expected_encrypted_text
     start_index = 11
     end_index = 16
     key = "WmZq4t7w!z%C&F)J"
     analyzer_results = [RecognizerResult("PERSON", start_index, end_index, 0.8)]
     anonymizers_config = {"PERSON": OperatorConfig("encrypt", {"key": key})}
 
+    text = f"{unencrypted_text}Chloë"
     actual_anonymize_result = AnonymizerEngine().anonymize(
         text, analyzer_results, anonymizers_config
     )

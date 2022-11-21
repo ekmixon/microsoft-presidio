@@ -38,7 +38,4 @@ def _equal_dicts(dict1: Dict, dict2: Dict, ignore_keys: List[str]):
 def _ordered(obj):
     if isinstance(obj, dict):
         return sorted((k, _ordered(v)) for k, v in obj.items())
-    if isinstance(obj, list):
-        return sorted(_ordered(x) for x in obj)
-    else:
-        return obj
+    return sorted(_ordered(x) for x in obj) if isinstance(obj, list) else obj

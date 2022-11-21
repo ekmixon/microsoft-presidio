@@ -127,7 +127,7 @@ class BatchAnalyzerEngine:
     @staticmethod
     def _validate_types(value_iterator: Iterable[Any]) -> Iterator[Any]:
         for val in value_iterator:
-            if val and not type(val) in (int, float, bool, str):
+            if val and type(val) not in (int, float, bool, str):
                 err_msg = (
                     "Analyzer.analyze_iterator only works "
                     "on primitive types (int, float, bool, str). "
@@ -139,7 +139,6 @@ class BatchAnalyzerEngine:
 
     @staticmethod
     def _get_nested_keys_to_skip(key, keys_to_skip):
-        new_keys_to_skip = [
+        return [
             k.replace(f"{key}.", "") for k in keys_to_skip if k.startswith(key)
         ]
-        return new_keys_to_skip

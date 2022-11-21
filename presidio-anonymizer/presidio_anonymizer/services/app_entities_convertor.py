@@ -66,4 +66,4 @@ class AppEntitiesConvertor:
     @staticmethod
     def check_custom_operator(operators: Dict[str, OperatorConfig]):
         """Check if an operator is of type custom."""
-        return any([config.operator_name == "custom" for config in operators.values()])
+        return any(config.operator_name == "custom" for config in operators.values())

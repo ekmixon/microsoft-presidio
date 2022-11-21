@@ -25,10 +25,7 @@ def test_given_anonymize_operators_class_then_we_get_the_correct_class():
         )
         assert operator
         assert operator.operator_name() == operator_name
-        assert (
-            operator.operator_type() == OperatorType.Anonymize
-            or operator.operator_type() == OperatorType.All
-        )
+        assert operator.operator_type() in [OperatorType.Anonymize, OperatorType.All]
 
 
 def test_given_decrypt_operator_class_then_we_get_the_correct_class():

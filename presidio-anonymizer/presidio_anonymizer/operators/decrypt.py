@@ -23,8 +23,7 @@ class Decrypt(Operator):
         :return: The encrypted text
         """
         encoded_key = params.get(self.KEY).encode("utf8")
-        decrypted_text = AESCipher.decrypt(key=encoded_key, text=text)
-        return decrypted_text
+        return AESCipher.decrypt(key=encoded_key, text=text)
 
     def validate(self, params: Dict = None) -> None:
         """

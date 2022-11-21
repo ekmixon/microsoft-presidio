@@ -21,8 +21,7 @@ class Encrypt(Operator):
         :return: The encrypted text
         """
         encoded_key = params.get(self.KEY).encode("utf8")
-        encrypted_text = AESCipher.encrypt(encoded_key, text)
-        return encrypted_text
+        return AESCipher.encrypt(encoded_key, text)
 
     def validate(self, params: Dict = None) -> None:
         """

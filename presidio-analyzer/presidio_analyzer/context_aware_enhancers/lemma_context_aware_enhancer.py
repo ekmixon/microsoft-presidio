@@ -74,11 +74,7 @@ class LemmaContextAwareEnhancer(ContextAwareEnhancer):
         recognizers_dict = {recognizer.id: recognizer for recognizer in recognizers}
 
         # Create empty list in None or lowercase all context words in the list
-        if not context:
-            context = []
-        else:
-            context = [word.lower() for word in context]
-
+        context = [word.lower() for word in context] if context else []
         # Sanity
         if nlp_artifacts is None:
             logger.warning("NLP artifacts were not provided")
@@ -168,18 +164,14 @@ class LemmaContextAwareEnhancer(ContextAwareEnhancer):
             return word
 
         for predefined_context_word in recognizer_context_list:
-            # result == true only if any of the predefined context words
-            # is found exactly or as a substring in any of the collected
-            # context words
-            result = next(
+            if result := next(
                 (
                     True
                     for keyword in context_list
                     if predefined_context_word in keyword
                 ),
                 False,
-            )
-            if result:
+            ):
                 logger.debug("Found context keyword '%s'", predefined_context_word)
                 word = predefined_context_word
                 break

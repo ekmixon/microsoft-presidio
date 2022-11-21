@@ -68,5 +68,5 @@ class TransformersRecognizer(SpacyRecognizer):
         entity: str, label: str, check_label_groups: Tuple[Set, Set]
     ) -> bool:
         return any(
-            [entity in egrp and label in lgrp for egrp, lgrp in check_label_groups]
+            entity in egrp and label in lgrp for egrp, lgrp in check_label_groups
         )

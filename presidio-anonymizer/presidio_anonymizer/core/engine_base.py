@@ -89,8 +89,7 @@ class EngineBase(ABC):
         params = operator_metadata.params
         params["entity_type"] = entity_type
         self.logger.debug(f"operating on {entity_type} with {operator}")
-        operated_on_text = operator.operate(params=params, text=text_to_operate_on)
-        return operated_on_text
+        return operator.operate(params=params, text=text_to_operate_on)
 
     @staticmethod
     def __get_entity_operator_metadata(
@@ -100,8 +99,7 @@ class EngineBase(ABC):
         # If it does not exist, we get the default from the list.
         if operators_metadata is None:
             operators_metadata = {}
-        operator = operators_metadata.get(entity_type)
-        if operator:
+        if operator := operators_metadata.get(entity_type):
             return operator
         else:
             return operators_metadata.get("DEFAULT")

@@ -30,13 +30,14 @@ def app_tracer():
 @pytest.fixture(scope="module")
 def loaded_analyzer_engine(loaded_registry, app_tracer):
     mock_nlp_artifacts = NlpArtifacts([], [], [], [], None, "en")
-    analyzer_engine = AnalyzerEngine(
+    return AnalyzerEngine(
         loaded_registry,
-        NlpEngineMock(stopwords=[], punct_words=[], nlp_artifacts=mock_nlp_artifacts),
+        NlpEngineMock(
+            stopwords=[], punct_words=[], nlp_artifacts=mock_nlp_artifacts
+        ),
         app_tracer=app_tracer,
         log_decision_process=True,
     )
-    return analyzer_engine
 
 
 @pytest.fixture(scope="module")

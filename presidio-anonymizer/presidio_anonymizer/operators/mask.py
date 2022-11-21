@@ -68,6 +68,5 @@ class Mask(Operator):
     def _get_anonymized_text(text, chars_to_mask, from_end, masking_char):
         if not from_end:
             return masking_char * chars_to_mask + text[chars_to_mask:]
-        else:
-            mask_from_index = len(text) - chars_to_mask
-            return text[:mask_from_index] + masking_char * chars_to_mask
+        mask_from_index = len(text) - chars_to_mask
+        return text[:mask_from_index] + masking_char * chars_to_mask

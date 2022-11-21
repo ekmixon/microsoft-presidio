@@ -211,12 +211,11 @@ class TextAnalyticsRecognizer(RemoteRecognizer):
     def _build_explanation(
         original_score: float, entity_type: str
     ) -> AnalysisExplanation:
-        explanation = AnalysisExplanation(
+        return AnalysisExplanation(
             recognizer=TextAnalyticsRecognizer.__class__.__name__,
             original_score=original_score,
             textual_explanation=f"Identified as {entity_type} by Text Analytics",
         )
-        return explanation
 
     @staticmethod
     def _get_conf_file_categories(file_location):

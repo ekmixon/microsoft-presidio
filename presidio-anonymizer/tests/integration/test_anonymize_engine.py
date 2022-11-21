@@ -179,9 +179,7 @@ def test_given_intersacting_entities_then_we_anonymize_correctly():
 )
 def test_given_hash_then_we_anonymize_correctly(hash_type, result):
     text = "hello world, my name is Jane Doe. My number is: 034453334"
-    params = {}
-    if hash_type:
-        params = {"hash_type": hash_type}
+    params = {"hash_type": hash_type} if hash_type else {}
     anonymizer_config = {"DEFAULT": OperatorConfig("hash", params)}
     analyzer_results = [
         RecognizerResult(start=48, end=57, score=0.95, entity_type="PHONE_NUMBER"),

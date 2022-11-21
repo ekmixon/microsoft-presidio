@@ -46,7 +46,7 @@ class Format(object):
         line += max(21 - len(line), 0) * " "
         line += problem.type
         if problem.explanation:
-            line += "  (%s)" % problem.explanation
+            line += f"  ({problem.explanation})"
         return line
 
     @staticmethod
@@ -118,43 +118,48 @@ def show_problems(
     :param args_format: format in which to output discovered problems
     :param no_warn: whether to output only error level problems
     """
-    max_level = 0
     first = True
 
-    if args_format == "auto":
-        if "GITHUB_ACTIONS" in os.environ and "GITHUB_WORKFLOW" in os.environ:
+    if "GITHUB_ACTIONS" in os.environ and "GITHUB_WORKFLOW" in os.environ:
+        if args_format == "auto":
             args_format = "github"
-        elif supports_color():
+    elif supports_color():
+        if args_format == "auto":
             args_format = "colored"
 
     for problem in problems:
         if no_warn and (problem.level != "error"):
             continue
-        if args_format == "parsable":
-            print(Format.parsable(problem))
-        elif args_format == "github":
-            if first:
-                print("::group::%s" % file)
-                first = False
-            print(Format.github(problem, file))
-        elif args_format == "colored":
+        if args_format == "colored":
             if first:
                 print("\033[4m%s\033[0m" % file)
                 first = False
             print(Format.standard_color(problem))
+        elif args_format == "github":
+            if first:
+                print(f"::group::{file}")
+                first = False
+            print(Format.github(problem, file))
+        elif args_format == "parsable":
+            print(Format.parsable(problem))
         else:
             if first:
                 print(file)
                 first = False
             print(Format.standard(problem))
 
-    if not first and args_format == "github":
-        print("::endgroup::")
+    if args_format == "github":
+        if not first:
+            print("::endgroup::")
 
-    if not first and args_format != "parsable":
+            print("")
+
+    elif args_format == "parsable":
+        pass
+    elif not first:
         print("")
 
-    return max_level
+    return 0
 
 
 def find_files_recursively(
@@ -174,9 +179,8 @@ def find_files_recursively(
                     filepath = os.path.join(root, f)
                     if conf.is_text_file(filepath):
                         yield filepath
-        else:
-            if conf.is_text_file(item):
-                yield item
+        elif conf.is_text_file(item):
+            yield item
 
 
 def run() -> None:
@@ -235,7 +239,7 @@ def run() -> None:
     try:
         if args.config_data is not None:
             if args.config_data != "" and ":" not in args.config_data:
-                args.config_data = "extends: " + args.config_data
+                args.config_data = f"extends: {args.config_data}"
             conf = PresidioCLIConfig(content=args.config_data)
         elif args.config_file is not None:
             conf = PresidioCLIConfig(file=args.config_file)
@@ -276,8 +280,5 @@ def run() -> None:
             no_warn=args.no_warnings,
         )
 
-    if prob_num > 0:
-        return_code = 1
-    else:
-        return_code = 0
+    return_code = 1 if prob_num > 0 else 0
     sys.exit(return_code)

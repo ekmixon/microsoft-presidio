@@ -15,8 +15,7 @@ def nlp_recognizer(nlp_recognizers):
 
 def prepare_and_analyze(nlp, recognizer, text, ents):
     nlp_artifacts = nlp.process_text(text, "en")
-    results = recognizer.analyze(text, ents, nlp_artifacts)
-    return results
+    return recognizer.analyze(text, ents, nlp_artifacts)
 
 
 @pytest.mark.parametrize(
@@ -71,9 +70,8 @@ def test_when_person_in_text_then_person_full_name_complex_found(
     assert len(results) > 0
 
     # check that most of the text is covered
-    covered_text = ""
-    for result in results:
-        sl = slice(result.start, result.end)
-        covered_text += text[sl]
+    covered_text = "".join(
+        text[slice(result.start, result.end)] for result in results
+    )
 
     assert len(text) - len(covered_text) < 5

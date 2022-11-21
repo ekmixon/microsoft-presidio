@@ -11,8 +11,7 @@ def fig2img(fig):
     buf = io.BytesIO()
     fig.savefig(buf)
     buf.seek(0)
-    img = Image.open(buf)
-    return img
+    return Image.open(buf)
 
 
 class ImagePiiVerifyEngine:
@@ -39,24 +38,22 @@ class ImagePiiVerifyEngine:
         fig.set_size_inches(image_x / image_r, image_y / image_r)
         if len(bboxes) == 0:
             return image
-        else:
-            for box in bboxes:
-                entity_type = box.entity_type
-                x0 = box.left
-                y0 = box.top
-                x1 = x0 + box.width
-                y1 = y0 + box.height
-                rect = matplotlib.patches.Rectangle(
-                    (x0, y0), x1 - x0, y1 - y0, edgecolor="b", facecolor="none"
-                )
-                ax.add_patch(rect)
-                ax.annotate(
-                    entity_type,
-                    xy=(x0 - 3, y0 - 3),
-                    xycoords="data",
-                    bbox=dict(boxstyle="round4,pad=.5", fc="0.9"),
-                )
-            ax.imshow(image)
-            im_from_fig = fig2img(fig)
-            im_resized = im_from_fig.resize((image_x, image_y))
-            return im_resized
+        for box in bboxes:
+            entity_type = box.entity_type
+            x0 = box.left
+            y0 = box.top
+            x1 = x0 + box.width
+            y1 = y0 + box.height
+            rect = matplotlib.patches.Rectangle(
+                (x0, y0), x1 - x0, y1 - y0, edgecolor="b", facecolor="none"
+            )
+            ax.add_patch(rect)
+            ax.annotate(
+                entity_type,
+                xy=(x0 - 3, y0 - 3),
+                xycoords="data",
+                bbox=dict(boxstyle="round4,pad=.5", fc="0.9"),
+            )
+        ax.imshow(image)
+        im_from_fig = fig2img(fig)
+        return im_from_fig.resize((image_x, image_y))

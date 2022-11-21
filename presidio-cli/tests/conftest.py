@@ -59,16 +59,14 @@ def temp_workspace():
 
 @pytest.fixture()
 def config():
-    config = PresidioCLIConfig(content="extends: default")
-    return config
+    return PresidioCLIConfig(content="extends: default")
 
 
 @pytest.fixture()
 def config_with_allow_list():
-    config = PresidioCLIConfig(
+    return PresidioCLIConfig(
         content='extends: default\nallow:\n  - "John Sample"\n  - "example@example.com"\n  - "example.com"'
     )
-    return config
 
 
 @pytest.fixture(scope="session")

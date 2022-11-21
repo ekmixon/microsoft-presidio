@@ -48,11 +48,9 @@ class AuMedicareRecognizer(PatternRecognizer):
         supported_entity: str = "AU_MEDICARE",
         replacement_pairs: Optional[List[Tuple[str, str]]] = None,
     ):
-        self.replacement_pairs = (
-            replacement_pairs if replacement_pairs else [("-", ""), (" ", "")]
-        )
-        patterns = patterns if patterns else self.PATTERNS
-        context = context if context else self.CONTEXT
+        self.replacement_pairs = replacement_pairs or [("-", ""), (" ", "")]
+        patterns = patterns or self.PATTERNS
+        context = context or self.CONTEXT
         super().__init__(
             supported_entity=supported_entity,
             patterns=patterns,
@@ -76,15 +74,9 @@ class AuMedicareRecognizer(PatternRecognizer):
         weight = [1, 3, 7, 9, 1, 3, 7, 9]
 
         # Perform checksums
-        sum_product = 0
-        for i in range(8):
-            sum_product += medicare_list[i] * weight[i]
+        sum_product = sum(medicare_list[i] * weight[i] for i in range(8))
         remainder = sum_product % 10
-        if remainder == medicare_list[8]:
-            result = True
-        else:
-            result = None
-        return result
+        return True if remainder == medicare_list[8] else None
 
     @staticmethod
     def __sanitize_value(text: str, replacement_pairs: List[Tuple[str, str]]) -> str:

@@ -24,22 +24,14 @@ def test_given_invalid_json_then_we_fail_to_parse_it_to_operator_config():
 
 
 def test_given_two_identical_entities_then_we_verify_they_are_equal():
-    one = OperatorConfig("name", {"key", "key"})
-    two = OperatorConfig("name", {"key", "key"})
+    one = OperatorConfig("name", {"key"})
+    two = OperatorConfig("name", {"key"})
     assert one == two
 
 
-@pytest.mark.parametrize(
-    # fmt: off
-    "anonymizer_config",
-    [
-        OperatorConfig("name1", {"key", "key"}),
-        OperatorConfig("name1", {}),
-    ],
-    # fmt: on
-)
+@pytest.mark.parametrize("anonymizer_config", [OperatorConfig("name1", {"key"}), OperatorConfig("name1", {})])
 def test_given_two_different_entities_then_we_verify_they_are_equal(anonymizer_config):
-    one = OperatorConfig("name", {"key", "key"})
+    one = OperatorConfig("name", {"key"})
     assert one != anonymizer_config
 
 

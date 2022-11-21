@@ -37,8 +37,8 @@ class ItFiscalCodeRecognizer(PatternRecognizer):
         supported_language: str = "it",
         supported_entity: str = "IT_FISCAL_CODE",
     ):
-        patterns = patterns if patterns else self.PATTERNS
-        context = context if context else self.CONTEXT
+        patterns = patterns or self.PATTERNS
+        context = context or self.CONTEXT
         super().__init__(
             supported_entity=supported_entity,
             patterns=patterns,
@@ -57,7 +57,7 @@ class ItFiscalCodeRecognizer(PatternRecognizer):
         pattern_text = pattern_text.upper()
         control = pattern_text[-1]
         text_to_validate = pattern_text[:-1]
-        odd_values = text_to_validate[0::2]
+        odd_values = text_to_validate[::2]
         even_values = text_to_validate[1::2]
 
         # Odd values
@@ -100,10 +100,7 @@ class ItFiscalCodeRecognizer(PatternRecognizer):
             "Z": 23,
         }
 
-        odd_sum = 0
-        for char in odd_values:
-            odd_sum += map_odd[char]
-
+        odd_sum = sum(map_odd[char] for char in odd_values)
         # Even values
         map_even = {
             "0": 0,
@@ -144,10 +141,7 @@ class ItFiscalCodeRecognizer(PatternRecognizer):
             "Z": 25,
         }
 
-        even_sum = 0
-        for char in even_values:
-            even_sum += map_even[char]
-
+        even_sum = sum(map_even[char] for char in even_values)
         # Mod value
         map_mod = {
             0: "A",
@@ -179,9 +173,4 @@ class ItFiscalCodeRecognizer(PatternRecognizer):
         }
         check_value = map_mod[((odd_sum + even_sum) % 26)]
 
-        if check_value == control:
-            result = True
-        else:
-            result = None
-
-        return result
+        return True if check_value == control else None

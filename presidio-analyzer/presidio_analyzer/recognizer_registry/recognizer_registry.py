@@ -55,10 +55,7 @@ class RecognizerRegistry:
 
     def __init__(self, recognizers: Optional[Iterable[EntityRecognizer]] = None):
 
-        if recognizers:
-            self.recognizers = recognizers
-        else:
-            self.recognizers = []
+        self.recognizers = recognizers or []
 
     def load_predefined_recognizers(
         self, languages: Optional[List[str]] = None, nlp_engine: NlpEngine = None
@@ -129,13 +126,12 @@ class RecognizerRegistry:
             return StanzaRecognizer
         if isinstance(nlp_engine, TransformersNlpEngine):
             return TransformersRecognizer
-        else:
-            logger.warning(
-                "nlp engine should be either SpacyNlpEngine,"
-                "StanzaNlpEngine or TransformersNlpEngine"
-            )
-            # Returning default
-            return SpacyRecognizer
+        logger.warning(
+            "nlp engine should be either SpacyNlpEngine,"
+            "StanzaNlpEngine or TransformersNlpEngine"
+        )
+        # Returning default
+        return SpacyRecognizer
 
     def get_recognizers(
         self,
@@ -158,7 +154,7 @@ class RecognizerRegistry:
         if language is None:
             raise ValueError("No language provided")
 
-        if entities is None and all_fields is False:
+        if entities is None and not all_fields:
             raise ValueError("No entities provided")
 
         all_possible_recognizers = copy.copy(self.recognizers)
@@ -175,23 +171,21 @@ class RecognizerRegistry:
             ]
         else:
             for entity in entities:
-                subset = [
+                if subset := [
                     rec
                     for rec in all_possible_recognizers
                     if entity in rec.supported_entities
                     and language == rec.supported_language
-                ]
+                ]:
+                    to_return.update(set(subset))
 
-                if not subset:
+                else:
                     logger.warning(
                         "Entity %s doesn't have the corresponding"
                         " recognizer in language : %s",
                         entity,
                         language,
                     )
-                else:
-                    to_return.update(set(subset))
-
         logger.debug(
             "Returning a total of %s recognizers",
             str(len(to_return)),

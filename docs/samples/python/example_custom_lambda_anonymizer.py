@@ -12,21 +12,21 @@ def reverse_string(x):
 
 def anonymize_reverse_lambda(analyzer_results, text_to_anonymize):
     """Anonymize using an example lambda."""
-    anonymized_results = anonymizer.anonymize(
+    return anonymizer.anonymize(
         text=text_to_anonymize,
         analyzer_results=analyzer_results,
         operators={
-            "EMAIL_ADDRESS": OperatorConfig("custom", {"lambda": lambda x: x[::-1]})
+            "EMAIL_ADDRESS": OperatorConfig(
+                "custom", {"lambda": lambda x: x[::-1]}
+            )
         },
     )
-
-    return anonymized_results
 
 
 def anonymize_faker_lambda(analyzer_results, text_to_anonymize):
     """Anonymize using a faker provider."""
 
-    anonymized_results = anonymizer.anonymize(
+    return anonymizer.anonymize(
         text=text_to_anonymize,
         analyzer_results=analyzer_results,
         operators={
@@ -35,8 +35,6 @@ def anonymize_faker_lambda(analyzer_results, text_to_anonymize):
             )
         },
     )
-
-    return anonymized_results
 
 
 if __name__ == "__main__":

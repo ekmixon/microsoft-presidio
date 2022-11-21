@@ -55,10 +55,7 @@ class PatternRecognizer(LocalRecognizer):
             name=name,
             version=version,
         )
-        if patterns is None:
-            self.patterns = []
-        else:
-            self.patterns = patterns
+        self.patterns = [] if patterns is None else patterns
         self.context = context
         self.deny_list_score = deny_list_score
 
@@ -151,14 +148,13 @@ class PatternRecognizer(LocalRecognizer):
         :param validation_result: Whether validation was used and its result
         :return: Analysis explanation
         """
-        explanation = AnalysisExplanation(
+        return AnalysisExplanation(
             recognizer=recognizer_name,
             original_score=original_score,
             pattern_name=pattern_name,
             pattern=pattern,
             validation_result=validation_result,
         )
-        return explanation
 
     def __analyze_patterns(
         self, text: str, flags: int = None
@@ -172,7 +168,7 @@ class PatternRecognizer(LocalRecognizer):
         :param flags: regex flags
         :return: A list of RecognizerResult
         """
-        flags = flags if flags else re.DOTALL | re.MULTILINE
+        flags = flags or re.DOTALL | re.MULTILINE
         results = []
         for pattern in self.patterns:
             match_start_time = datetime.datetime.now()
@@ -227,8 +223,7 @@ class PatternRecognizer(LocalRecognizer):
                 # Update analysis explanation score following validation or invalidation
                 description.score = pattern_result.score
 
-        results = EntityRecognizer.remove_duplicates(results)
-        return results
+        return EntityRecognizer.remove_duplicates(results)
 
     def to_dict(self) -> Dict:
         """Serialize instance into a dictionary."""
@@ -245,8 +240,7 @@ class PatternRecognizer(LocalRecognizer):
     @classmethod
     def from_dict(cls, entity_recognizer_dict: Dict) -> "PatternRecognizer":
         """Create instance from a serialized dict."""
-        patterns = entity_recognizer_dict.get("patterns")
-        if patterns:
+        if patterns := entity_recognizer_dict.get("patterns"):
             patterns_list = [Pattern.from_dict(pat) for pat in patterns]
             entity_recognizer_dict["patterns"] = patterns_list
 

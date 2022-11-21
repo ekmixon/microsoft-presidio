@@ -12,10 +12,7 @@ class ImageRedactorEngine:
     """
 
     def __init__(self, image_analyzer_engine: ImageAnalyzerEngine = None):
-        if not image_analyzer_engine:
-            self.image_analyzer_engine = ImageAnalyzerEngine()
-        else:
-            self.image_analyzer_engine = image_analyzer_engine
+        self.image_analyzer_engine = image_analyzer_engine or ImageAnalyzerEngine()
 
     def redact(
         self, image: Image,

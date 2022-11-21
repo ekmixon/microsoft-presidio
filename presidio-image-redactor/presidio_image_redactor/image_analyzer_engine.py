@@ -37,10 +37,9 @@ class ImageAnalyzerEngine:
         analyzer_result = self.analyzer_engine.analyze(
             text=text, language="en", **kwargs
         )
-        bboxes = self.map_analyzer_results_to_bounding_boxes(
+        return self.map_analyzer_results_to_bounding_boxes(
             analyzer_result, ocr_result, text
         )
-        return bboxes
 
     @staticmethod
     def map_analyzer_results_to_bounding_boxes(
